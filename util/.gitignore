@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+safety/safety.iml
+safety/target
+
+validate/validate.iml
+validate/target
+
+util.iml
