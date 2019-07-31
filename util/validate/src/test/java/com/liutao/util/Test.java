@@ -1,6 +1,7 @@
 package com.liutao.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,19 +11,15 @@ import org.apache.commons.io.FileUtils;
 
 public class Test {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 
     Test test = new Test();
-    try {
-//      test.testCode();
-      test.testImg();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+    test.testImg();
   }
 
-  private static void testCode() throws IOException {
+
+  // 图片验证
+  public void testCode() throws IOException {
 
     byte[] newImages = VerifyCodeUtil.getVerifyImg();
     FileOutputStream fout = new FileOutputStream("C:/Users/Administrator/Desktop/verigy.png");
@@ -31,38 +28,46 @@ public class Test {
 
   }
 
+
+  // 图片滑动验证
   public void testImg() throws Exception {
 
     Map<String, byte[]> pictureMap;
-    File templateFile;  //模板图片
-    File targetFile;  //
+    InputStream stream;
+
     Random random = new Random();
     int templateNo = random.nextInt(4) + 1;
     int targetNo = random.nextInt(20) + 1;
 
-    InputStream stream = getClass().getClassLoader().getResourceAsStream("static/templates/" + templateNo + ".png");
-    templateFile = new File(templateNo + ".png");
+    //模板图片
+    File templateFile = new File(templateNo + ".png");
+//    InputStream stream = getClass().getClassLoader().getResourceAsStream("static/templates/" + templateNo + ".png");
+    stream = new FileInputStream(
+        "/Users/niuhaijun/projects/TOOLS_other/util/validate/src/main/resources/static/templates/"
+            + templateNo + ".png");
     FileUtils.copyInputStreamToFile(stream, templateFile);
 
-    stream = getClass().getClassLoader().getResourceAsStream("static/targets/" + targetNo + ".jpg");
-    targetFile = new File(targetNo + ".jpg");
+    // 背景图
+    File targetFile = new File(targetNo + ".jpg");
+//    stream = getClass().getClassLoader().getResourceAsStream("static/targets/" + targetNo + ".jpg");
+    stream = new FileInputStream(
+        "/Users/niuhaijun/projects/TOOLS_other/util/validate/src/main/resources/static/targets/"
+            + targetNo + ".jpg");
     FileUtils.copyInputStreamToFile(stream, targetFile);
+
+
+
     pictureMap = VerifyImageUtil.pictureTemplatesCut(templateFile, targetFile, "png", "jpg");
     byte[] oriCopyImages = pictureMap.get("oriCopyImage");
     byte[] newImages = pictureMap.get("newImage");
 
+    // 切图（被拖拽的小图）
     FileOutputStream fout = new FileOutputStream("/Users/niuhaijun/Downloads/oriCopyImage.png");
-    //将字节写入文件
-    try {
-      fout.write(oriCopyImages);
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
+    fout.write(oriCopyImages);
     fout.close();
 
+    // 原图（少一块的背景图）
     FileOutputStream newImageFout = new FileOutputStream("/Users/niuhaijun/Downloads/newImage.png");
-    //将字节写入文件
     newImageFout.write(newImages);
     newImageFout.close();
   }
