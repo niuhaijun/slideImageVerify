@@ -56,7 +56,6 @@ public class Test {
     FileUtils.copyInputStreamToFile(stream, targetFile);
 
 
-
     pictureMap = VerifyImageUtil.pictureTemplatesCut(templateFile, targetFile, "png", "jpg");
     byte[] oriCopyImages = pictureMap.get("oriCopyImage");
     byte[] newImages = pictureMap.get("newImage");
